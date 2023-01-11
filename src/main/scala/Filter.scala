@@ -1,5 +1,6 @@
 package snow
 
+import scala.util.chaining._
 import io.circe._
 import io.circe.syntax._
 
@@ -19,13 +20,14 @@ object Filter {
 
       Right(
         Filter(
-          ids = c.downField("ids").as[List[String]].toOption,
-          authors = c.downField("authors").as[List[String]].toOption,
-          kinds = c.downField("kinds").as[List[Int]].toOption,
+          authors =
+            c.downField("authors").as[List[String]].getOrElse(List.empty),
+          kinds = c.downField("kinds").as[List[Int]].getOrElse(List.empty),
+          ids = c.downField("ids").as[List[String]].getOrElse(List.empty),
+          tags = tags,
           since = c.downField("since").as[Long].toOption,
           until = c.downField("until").as[Long].toOption,
-          limit = c.downField("limit").as[Int].toOption,
-          tags = tags
+          limit = c.downField("limit").as[Int].toOption
         )
       )
     }
@@ -51,13 +53,25 @@ object Filter {
 }
 
 case class Filter(
-    ids: Option[List[String]],
-    authors: Option[List[String]],
-    kinds: Option[List[Int]],
-    tags: Map[String, List[String]],
-    since: Option[Long],
-    until: Option[Long],
-    limit: Option[Int]
+    ids: List[String] = List.empty,
+    authors: List[String] = List.empty,
+    kinds: List[Int] = List.empty,
+    tags: Map[String, List[String]] = Map.empty,
+    since: Option[Long] = None,
+    until: Option[Long] = None,
+    limit: Option[Int] = None
 ) {
-  def matches(event: Event): Boolean = true
+  def matches(event: Event): Boolean =
+    (ids.isEmpty || ids.contains(event.id)) &&
+      (kinds.isEmpty || kinds.contains(event.kind)) &&
+      (authors.isEmpty || authors.contains(event.pubkey)) &&
+      tags
+        .map { case ((tag, vals)) =>
+          event
+            .getTagValues(tag)
+            .exists(tagValue => vals.contains(tagValue))
+        }
+        .forall(_ == true) &&
+      since.map(event.created_at > _).getOrElse(true) &&
+      until.map(event.created_at < _).getOrElse(true)
 }
