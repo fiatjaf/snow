@@ -19,6 +19,8 @@ lazy val root = project
       "io.circe" %%% "circe-generic" % "0.14.3",
       "io.circe" %%% "circe-parser" % "0.14.3",
       "com.fiatjaf" %%% "scoin" % "0.5.0",
+      "org.http4s" %%% "http4s-client" % "1.0.0-M36",
+      "org.http4s" %%% "http4s-dom" % "1.0.0-M36",
 
       "com.lihaoyi" %%% "utest" % "0.8.0" % Test
     ),
