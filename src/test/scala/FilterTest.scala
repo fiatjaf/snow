@@ -29,6 +29,7 @@ object FilterTest extends TestSuite {
           .toTry
           .get(0) == "4bf0c63fcb93463407af97a5e5ee64fa883d107ef9e558472c4eb9aaaefa459d"
       )
+      assert(filterj2.hcursor.get[List[Int]]("kinds").isLeft)
     }
 
     test("event matching") {

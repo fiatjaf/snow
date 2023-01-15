@@ -34,19 +34,16 @@ object Filter {
   }
   given Encoder[Filter] = new Encoder[Filter] {
     final def apply(f: Filter): Json = {
-      var fj = JsonObject(
-        "ids" := f.ids,
-        "authors" := f.authors,
-        "kinds" := f.kinds,
-        "since" := f.since,
-        "until" := f.until,
-        "limit" := f.limit
-      )
-
+      var fj = JsonObject()
+      if (f.ids.size > 0) fj = fj.add("ids", f.ids.asJson)
+      if (f.authors.size > 0) fj = fj.add("authors", f.authors.asJson)
+      if (f.kinds.size > 0) fj = fj.add("kinds", f.kinds.asJson)
+      f.since.foreach { v => fj = fj.add("since", v.asJson) }
+      f.until.foreach { v => fj = fj.add("until", v.asJson) }
+      f.limit.foreach { v => fj = fj.add("limit", v.asJson) }
       f.tags.foreachEntry { (k, v) =>
         fj = fj.add(s"#${k}", v.asJson)
       }
-
       fj.asJson
     }
   }
