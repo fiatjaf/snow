@@ -43,7 +43,7 @@ class Relay(
 ) {
   def subscribe(
       filter: Filter*
-  ): IO[fs2.Stream[IO, Event]] = {
+  ): IO[(List[Event], fs2.Stream[IO, Event])] = {
     nextId.modify(x => (x + 1, x)).map(_.toString).flatMap { currId =>
       val send = commands.send(
         Seq("REQ".asJson, currId.asJson)
@@ -51,14 +51,27 @@ class Relay(
           .asJson
       )
 
+      val eose =
+        eoses
+          .subscribe(1)
+          .collect {
+            case subid if subid == currId => Event(kind = -1, content = "")
+          }
+          .delayBy(700.milliseconds)
+
       val receive =
         events
           .subscribe(1)
           .collect {
             case (subid, event) if subid == currId => event
           }
+          .merge(eose)
 
-      send.map(_ => receive)
+      for {
+        _ <- send
+        stored <- receive.takeWhile(_.kind != -1).compile.toList
+        live = receive.dropWhile(_.kind != -1).drop(1)
+      } yield (stored, live)
     }
   }
 

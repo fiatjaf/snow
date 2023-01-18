@@ -15,20 +15,25 @@ object RelayTest extends TestSuite {
   val tests = Tests {
     test("connect to relay and subscribe") {
       val program = Relay(uri"wss://nostr.fmt.wiz.biz").use { relay =>
-        for {
-          sub <- relay.subscribe(
-            Filter(kinds = List(0), since = Some(1673626539), limit = Some(1))
+        relay
+          .subscribe(
+            Filter(kinds = List(1), limit = Some(5))
           )
-          _ <- sub
-            .evalTap { evt =>
-              IO.delay {
-                assert(evt.kind == 0)
-              }
-            }
-            .take(1)
-            .compile
-            .drain
-        } yield ()
+          .flatMap { (stored, live) =>
+            IO.delay {
+              println(stored.size)
+              assert(stored.size == 5)
+            } *>
+              live
+                .evalTap { evt =>
+                  IO.delay {
+                    assert(evt.kind == 0)
+                  }
+                }
+                .take(1)
+                .compile
+                .drain
+          }
       }
 
       program.unsafeToFuture()
