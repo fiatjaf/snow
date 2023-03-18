@@ -2,7 +2,7 @@ package snow
 
 import java.util.Date
 import scala.util.Try
-import scoin.{Crypto, ByteVector32, ByteVector64}
+import scoin.{Crypto, PrivateKey, XOnlyPublicKey, ByteVector32, ByteVector64}
 import scodec.bits.ByteVector
 import io.circe._
 import io.circe.syntax._
@@ -35,7 +35,7 @@ case class Event(
   lazy val hash: ByteVector32 =
     Crypto.sha256(ByteVector.encodeUtf8(serialized).toOption.get)
 
-  def sign(privateKey: Crypto.PrivateKey): Event = {
+  def sign(privateKey: PrivateKey): Event = {
     val event = this.copy(pubkey = privateKey.publicKey.xonly.value.toHex)
     event.copy(
       id = event.hash.toHex,
@@ -47,10 +47,10 @@ case class Event(
     id == hash.toHex && (for {
       pkb <- ByteVector.fromHex(pubkey)
       pk32 <- Try(ByteVector32(pkb)).toOption
-      pk = Crypto.XOnlyPublicKey(pk32)
+      pk = XOnlyPublicKey(pk32)
       sigb <- ByteVector.fromHex(sig)
       sig64 <- Try(ByteVector64(sigb)).toOption
-    } yield Crypto.verifySignatureSchnorr(hash, sig64, pk)).getOrElse(false)
+    } yield Crypto.verifySignatureSchnorr(sig64, hash, pk)).getOrElse(false)
 
   def getTagValues(key: String): List[String] =
     tags.filter(items => items.size >= 2 && items(0) == key).map(_(1))

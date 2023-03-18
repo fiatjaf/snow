@@ -1,8 +1,8 @@
 package snow
 
 import scala.concurrent.duration._
-import scodec.bits.ByteVector
 import scoin.{Crypto, ByteVector32}
+import scodec.bits.ByteVector
 import fs2.{io => _, _}
 import fs2.concurrent.{Topic, Channel}
 import cats.implicits._

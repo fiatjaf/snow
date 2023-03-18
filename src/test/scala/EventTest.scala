@@ -4,7 +4,7 @@ import utest._
 import io.circe.syntax._
 import io.circe.parser.{parse, decode}
 import scodec.bits.ByteVector
-import scoin.Crypto
+import scoin.PrivateKey
 
 object EventTest extends TestSuite {
   val tests = Tests {
@@ -22,7 +22,7 @@ object EventTest extends TestSuite {
 
     test("sign and encode event") {
       val event = Event(1, "hello hello", created_at = 1234567).sign(
-        Crypto.PrivateKey(
+        PrivateKey(
           ByteVector.fromValidHex(
             "7708c95f09947507c1044e8f48bcf6350aa6bff1507dd4acfc755b9239b5c962"
           )

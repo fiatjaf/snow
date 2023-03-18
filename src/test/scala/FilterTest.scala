@@ -1,7 +1,7 @@
 package snow
 
 import utest._
-import scoin.Crypto
+import scoin.PrivateKey
 import scodec.bits.ByteVector
 import io.circe.syntax._
 import io.circe.parser.decode
@@ -53,7 +53,7 @@ object FilterTest extends TestSuite {
         ),
         123456789
       ).sign(
-        Crypto.PrivateKey(
+        PrivateKey(
           ByteVector.fromValidHex(
             "7708c95f09947507c1044e8f48bcf6350aa6bff1507dd4acfc755b9239b5c962"
           )
