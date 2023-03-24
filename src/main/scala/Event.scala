@@ -40,7 +40,7 @@ object Event {
         c.downField("kind").as[Int],
         c.downField("content").as[String],
         c.downField("tags").as[List[List[String]]],
-        c.downField("created_at").as[Long].orElse(Right(0L)),
+        c.downField("created_at").as[Long],
         c
           .downField("pubkey")
           .as[String]
