@@ -5,7 +5,6 @@ import io.circe.syntax.*
 import io.circe.parser.{parse, decode}
 import scodec.bits.ByteVector
 import scoin.PrivateKey
-import scoin.XOnlyPublicKey
 
 object NIP19Test extends TestSuite {
   val tests = Tests {
@@ -17,11 +16,11 @@ object NIP19Test extends TestSuite {
         .toTry
         .get
 
-      assertMatch(value) { case _: XOnlyPublicKey => }
+      assertMatch(value) { case _: ProfilePointer => }
 
       value match {
-        case pk: XOnlyPublicKey =>
-          pk.value.toHex ==> "a9f8b3f2ac19cc06d5194dd1ac9314d4741a09777444986553926d9165181647"
+        case pp: ProfilePointer =>
+          pp.pubkey.value.toHex ==> "a9f8b3f2ac19cc06d5194dd1ac9314d4741a09777444986553926d9165181647"
         case _ =>
       }
     }
@@ -51,11 +50,11 @@ object NIP19Test extends TestSuite {
         .toTry
         .get
 
-      assertMatch(value) { case _: String => }
+      assertMatch(value) { case _: EventPointer => }
 
       value match {
-        case id: String =>
-          id ==> "23a9d435681d9c45848ac5ca1edd3975d256906a15bf4d22401a6b79894ec47e"
+        case evp: EventPointer =>
+          evp.id ==> "23a9d435681d9c45848ac5ca1edd3975d256906a15bf4d22401a6b79894ec47e"
         case _ =>
       }
     }

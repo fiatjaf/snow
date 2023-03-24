@@ -6,13 +6,13 @@ import scoin.{PrivateKey, XOnlyPublicKey, Bech32, ByteVector32}
 
 case class EventPointer(
     id: String,
-    relays: List[String],
-    author: Option[XOnlyPublicKey]
+    relays: List[String] = List.empty,
+    author: Option[XOnlyPublicKey] = None
 )
 
 case class ProfilePointer(
     pubkey: XOnlyPublicKey,
-    relays: List[String]
+    relays: List[String] = List.empty
 )
 
 case class Address(
@@ -44,8 +44,7 @@ object TLVType {
 object NIP19 {
   def decode(bech32text: String): Either[
     Throwable,
-    PrivateKey | XOnlyPublicKey | String | EventPointer | ProfilePointer |
-      Address,
+    PrivateKey | EventPointer | ProfilePointer | Address,
   ] =
     Try(Bech32.decode(bech32text)) match {
       case Failure(err) => Left(err)
@@ -64,17 +63,19 @@ object NIP19 {
         }
     }
 
-  def parseNpub(data: Array[Byte]): Either[Throwable, XOnlyPublicKey] =
+  def parseNpub(data: Array[Byte]): Either[Throwable, ProfilePointer] =
     if data.size == 32 then
-      Right(XOnlyPublicKey(ByteVector32(ByteVector(data))))
+      Right(
+        ProfilePointer(pubkey = XOnlyPublicKey(ByteVector32(ByteVector(data))))
+      )
     else Left(Error("npub must contain 32 bytes"))
 
   def parseNsec(data: Array[Byte]): Either[Throwable, PrivateKey] =
     if data.size == 32 then Right(PrivateKey(ByteVector32(ByteVector(data))))
     else Left(Error("nsec must contain 32 bytes"))
 
-  def parseNote(data: Array[Byte]): Either[Throwable, String] =
-    if data.size == 32 then Right(ByteVector(data).toHex)
+  def parseNote(data: Array[Byte]): Either[Throwable, EventPointer] =
+    if data.size == 32 then Right(EventPointer(id = ByteVector(data).toHex))
     else Left(Error("note must contain 32 bytes"))
 
   def parseNprofile(data: Array[Byte]): Either[Throwable, ProfilePointer] = {
