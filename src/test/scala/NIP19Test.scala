@@ -1,7 +1,7 @@
 package snow
 
-import utest._
-import io.circe.syntax._
+import utest.*
+import io.circe.syntax.*
 import io.circe.parser.{parse, decode}
 import scodec.bits.ByteVector
 import scoin.PrivateKey

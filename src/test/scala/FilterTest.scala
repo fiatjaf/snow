@@ -1,9 +1,9 @@
 package snow
 
-import utest._
+import utest.*
 import scoin.PrivateKey
 import scodec.bits.ByteVector
-import io.circe.syntax._
+import io.circe.syntax.*
 import io.circe.parser.decode
 
 object FilterTest extends TestSuite {

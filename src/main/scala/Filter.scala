@@ -1,8 +1,8 @@
 package snow
 
-import scala.util.chaining._
-import io.circe._
-import io.circe.syntax._
+import scala.util.chaining.*
+import io.circe.*
+import io.circe.syntax.*
 
 object Filter {
   given Decoder[Filter] = new Decoder[Filter] {

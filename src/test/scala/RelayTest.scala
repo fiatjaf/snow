@@ -1,10 +1,10 @@
 package snow
 
-import utest._
-import scala.concurrent.duration._
+import utest.*
+import scala.concurrent.duration.*
 import scala.scalajs
-import cats.implicits._
-import cats.effect._
+import cats.implicits.*
+import cats.effect.*
 import cats.effect.unsafe.implicits.global
 import org.http4s.syntax.literals.uri
 import fs2.concurrent.Channel

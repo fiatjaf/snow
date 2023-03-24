@@ -1,18 +1,18 @@
 package snow
 
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 import scoin.{Crypto, ByteVector32}
 import scodec.bits.ByteVector
-import fs2.{io => _, _}
+import fs2.{io => *, *}
 import fs2.concurrent.{Topic, Channel}
-import cats.implicits._
-import cats.effect._
+import cats.implicits.*
+import cats.effect.*
 import org.http4s.Uri
-import org.http4s.dom._
-import org.http4s.client.websocket._
-import io.circe._
+import org.http4s.dom.*
+import org.http4s.client.websocket.*
+import io.circe.*
 import io.circe.parser.decode
-import io.circe.syntax._
+import io.circe.syntax.*
 
 object Relay {
   def apply(uri: Uri): Resource[IO, Relay] = {
