@@ -108,10 +108,10 @@ object NIP19Test extends TestSuite {
         .toTry
         .get
 
-      assertMatch(value) { case _: Address => }
+      assertMatch(value) { case _: AddressPointer => }
 
       value match {
-        case addr: Address =>
+        case addr: AddressPointer =>
           addr.author.value.toHex ==> "e2e973d0aa20a20aae663ce3c2ed8bb161b9b2df96a5e760d399fe675d77461e"
           addr.relays.size ==> 0
           addr.kind ==> 37342

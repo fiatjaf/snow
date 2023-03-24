@@ -15,7 +15,7 @@ case class ProfilePointer(
     relays: List[String] = List.empty
 )
 
-case class Address(
+case class AddressPointer(
     d: String,
     kind: Int,
     author: XOnlyPublicKey,
@@ -44,7 +44,7 @@ object TLVType {
 object NIP19 {
   def decode(bech32text: String): Either[
     Throwable,
-    PrivateKey | EventPointer | ProfilePointer | Address,
+    PrivateKey | EventPointer | ProfilePointer | AddressPointer,
   ] =
     Try(Bech32.decode(bech32text)) match {
       case Failure(err) => Left(err)
@@ -113,7 +113,7 @@ object NIP19 {
     else Left(Error("nevent id record missing or invalid"))
   }
 
-  def parseNaddr(data: Array[Byte]): Either[Throwable, Address] =
+  def parseNaddr(data: Array[Byte]): Either[Throwable, AddressPointer] =
     var d: String = null
     var relays: List[String] = List.empty
     var author: XOnlyPublicKey = null
@@ -135,7 +135,7 @@ object NIP19 {
     else if author == null then
       Left(Error("naddr author record missing or invalid"))
     else if kind == -1 then Left(Error("naddr kind record missing or invalid"))
-    else Right(Address(d, kind, author, relays))
+    else Right(AddressPointer(d, kind, author, relays))
 
   def parseTLV(data: Array[Byte]): List[TLVRecord] =
     parseTLVRecords(List.empty, ByteVector(data))
