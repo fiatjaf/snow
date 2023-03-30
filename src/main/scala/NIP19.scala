@@ -50,7 +50,7 @@ object NIP19 {
 
   def encode(
       thing: PrivateKey | XOnlyPublicKey | EventPointer | ProfilePointer |
-        AddressPointer
+        AddressPointer | ByteVector32
   ): String = {
     val (prefix, bytes) = thing match {
       case sk: PrivateKey       => encodeNsec(sk)
@@ -58,6 +58,7 @@ object NIP19 {
       case evp: EventPointer    => encodeNevent(evp)
       case addr: AddressPointer => encodeNaddr(addr)
       case pk: XOnlyPublicKey   => encodeNpub(pk)
+      case id: ByteVector32     => encodeNote(id)
     }
     val bytes5 = Bech32.eight2five(bytes.toArray)
     Bech32.encode(prefix, bytes5, Bech32Encoding)
@@ -149,6 +150,8 @@ object NIP19Encoder {
     ("nsec", sk.value.bytes)
   def encodeNpub(pk: XOnlyPublicKey): (String, ByteVector) =
     ("npub", pk.value.bytes)
+  def encodeNote(id: ByteVector32): (String, ByteVector) =
+    ("note", id.bytes)
   def encodeNprofile(pp: ProfilePointer): (String, ByteVector) =
     (
       "nprofile",
