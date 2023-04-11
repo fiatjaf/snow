@@ -62,7 +62,12 @@ object Event {
         c
           .downField("id")
           .as[String]
-          .map(Some(_))
+          .map {
+            case hex if ByteVector.fromHex(hex).isDefined && hex.length == 64 =>
+              Some(hex)
+            case _ =>
+              None
+          }
           .recoverWith(_ => Right(None)),
         c
           .downField("sig")
