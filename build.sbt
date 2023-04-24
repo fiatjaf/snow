@@ -4,7 +4,7 @@ ThisBuild / homepage            := Some(url("https://github.com/fiatjaf/snow"))
 ThisBuild / licenses            += License.Apache2
 ThisBuild / developers          := List(tlGitHubDev("fiatjaf", "fiatjaf"))
 
-ThisBuild / version := "0.0.1-SNAPSHOT"
+ThisBuild / version := "0.0.1"
 ThisBuild / tlSonatypeUseLegacyHost := false
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
