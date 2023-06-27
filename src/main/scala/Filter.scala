@@ -10,12 +10,16 @@ object Filter {
       // tag fields
       val tags =
         c.keys
-          .map(_.filter(_.startsWith("#")).flatMap { key =>
-            c.downField(key).as[List[String]] match {
-              case Right(v) => Some((key.drop(1), v))
-              case Left(_)  => None
-            }
-          }.toMap)
+          .map(
+            _.filter(_.startsWith("#"))
+              .flatMap { key =>
+                c.downField(key).as[List[String]] match {
+                  case Right(v) => Some((key.drop(1), v))
+                  case Left(_)  => None
+                }
+              }
+              .toMap
+          )
           .getOrElse(Map.empty)
 
       Right(
@@ -59,9 +63,11 @@ case class Filter(
     limit: Option[Int] = None
 ) {
   def matches(event: Event): Boolean =
-    (ids.isEmpty || ids.contains(event.id)) &&
+    (ids.isEmpty || event.id.map(id => ids.contains(id)).getOrElse(false)) &&
       (kinds.isEmpty || kinds.contains(event.kind)) &&
-      (authors.isEmpty || authors.contains(event.pubkey)) &&
+      (authors.isEmpty || event.pubkey
+        .map(pubkey => authors.contains(pubkey.toHex))
+        .getOrElse(false)) &&
       tags
         .map { case ((tag, vals)) =>
           event

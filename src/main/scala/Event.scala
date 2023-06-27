@@ -102,6 +102,8 @@ case class Event(
     id: Option[String] = None,
     sig: Option[ByteVector64] = None
 ) {
+  override def toString(): String = this.asJson.noSpaces
+
   lazy val serialized: String =
     List[Json](
       0.asJson,
