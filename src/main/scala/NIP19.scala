@@ -8,7 +8,8 @@ import scoin.Bech32.Bech32Encoding
 case class EventPointer(
     id: String,
     relays: List[String] = List.empty,
-    author: Option[XOnlyPublicKey] = None
+    author: Option[XOnlyPublicKey] = None,
+    kind: Option[Int] = None
 )
 
 case class ProfilePointer(
@@ -103,6 +104,7 @@ object NIP19Decoder {
     var id: String = null
     var relays: List[String] = List.empty
     var author: Option[XOnlyPublicKey] = None
+    var kind: Option[Int] = None
     decodeTLV(data).foreach {
       case TLVRecord(TLVType.Special, v) =>
         id = v.toHex
@@ -112,9 +114,11 @@ object NIP19Decoder {
         if (v.size == 32) {
           author = Some(XOnlyPublicKey(ByteVector32(v)))
         }
+      case TLVRecord(TLVType.Kind, v) => 
+        kind = Some(v.toInt(signed = false, ordering = ByteOrdering.BigEndian))
       case _ =>
     }
-    if id != null then Right(EventPointer(id, relays, author))
+    if id != null then Right(EventPointer(id, relays, author, kind))
     else Left(Error("nevent id record missing or invalid"))
   }
 
@@ -171,7 +175,14 @@ object NIP19Encoder {
         )) ++
         evp.relays.map(url =>
           TLVRecord(TLVType.Relays, ByteVector.encodeUtf8(url).toTry.get)
+        ) ++
+        evp.kind.toList.map(kind => 
+          TLVRecord(TLVType.Kind, ByteVector.fromInt(
+            kind, size = 4, ordering = ByteOrdering.BigEndian
+            )
+          )
         )
+        
     )
   )
   def encodeNaddr(addr: AddressPointer): (String, ByteVector) =
