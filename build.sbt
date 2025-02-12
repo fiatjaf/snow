@@ -11,6 +11,13 @@ ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeLegacy
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
+sonatypeProfileName    := "com.fiatjaf"
+scmInfo                := Some(ScmInfo(url("https://github.com/fiatjaf/snow"), "git@github.com:fiatjaf/snow.git"))
+licenses               += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
+publishMavenStyle      := true
+publishTo              := sonatypePublishToBundle.value
+sonatypeCredentialHost := "s01.oss.sonatype.org"
+
 lazy val snow = project
   .in(file("."))
   .settings(
@@ -35,6 +42,7 @@ ThisBuild / githubWorkflowBuildPreamble +=
   WorkflowStep.Use(
     UseRef.Public("actions", "setup-node", "v4"),
     name = Some("Setup Node.js"),
+    // must be a nodejs version with native WebSocket api
     params = Map("node-version" -> "22"),
   )
 ThisBuild / githubWorkflowBuildPreamble ++= Seq(
@@ -46,3 +54,15 @@ ThisBuild / githubWorkflowBuildPreamble ++= Seq(
     ),
   )
 )
+
+// maven magic, see https://github.com/makingthematrix/scala-suffix/tree/56270a#but-wait-thats-not-all
+Compile / packageBin / packageOptions += Package.ManifestAttributes("Automatic-Module-Name" -> "snow")
+
+//// below are some notes/commands which might help to just make github actions
+//// entirely nix-aware:
+
+// ThisBuild / githubWorkflowSbtCommand := "nix develop -c sbt"
+// WorkflowStep.Use(
+//  UseRef.Public("cachix", "install-nix-action", "v27"),
+//  name = Some("Install Nix"),
+// ),
