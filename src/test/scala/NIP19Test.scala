@@ -4,7 +4,7 @@ import utest.*
 import io.circe.syntax.*
 import io.circe.parser.{parse, decode}
 import scodec.bits.ByteVector
-import scoin.{PrivateKey,XOnlyPublicKey, ByteVector32}
+import scoin.{PrivateKey, XOnlyPublicKey, ByteVector32}
 
 object NIP19Test extends TestSuite {
   val tests = Tests {
@@ -103,16 +103,22 @@ object NIP19Test extends TestSuite {
     }
 
     test("decode another nevent with optional kind") {
-      val evp = EventPointer( 
+      val evp = EventPointer(
         id = "23a9d435681d9c45848ac5ca1edd3975d256906a15bf4d22401a6b79894ec47e",
         relays = List("wss://x.com/"),
-        author = Some(XOnlyPublicKey(ByteVector32.fromValidHex("2dbe092c6ada1367ecb73a0ef11cd2c31feb32357824c64a18f8da8596214d70"))),
+        author = Some(
+          XOnlyPublicKey(
+            ByteVector32.fromValidHex(
+              "2dbe092c6ada1367ecb73a0ef11cd2c31feb32357824c64a18f8da8596214d70"
+            )
+          )
+        ),
         kind = Some(1)
       )
       val encoded = NIP19.encode(evp)
       val value = NIP19.decode(encoded).toTry.get
-      assertMatch(value) { case _ : EventPointer => }
-      assert( value == evp )
+      assertMatch(value) { case _: EventPointer => }
+      assert(value == evp)
     }
 
     test("decode and encode nprofile") {
