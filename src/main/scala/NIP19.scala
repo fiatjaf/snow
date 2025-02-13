@@ -114,7 +114,7 @@ object NIP19Decoder {
         if (v.size == 32) {
           author = Some(XOnlyPublicKey(ByteVector32(v)))
         }
-      case TLVRecord(TLVType.Kind, v) => 
+      case TLVRecord(TLVType.Kind, v) =>
         kind = Some(v.toInt(signed = false, ordering = ByteOrdering.BigEndian))
       case _ =>
     }
@@ -176,13 +176,16 @@ object NIP19Encoder {
         evp.relays.map(url =>
           TLVRecord(TLVType.Relays, ByteVector.encodeUtf8(url).toTry.get)
         ) ++
-        evp.kind.toList.map(kind => 
-          TLVRecord(TLVType.Kind, ByteVector.fromInt(
-            kind, size = 4, ordering = ByteOrdering.BigEndian
+        evp.kind.toList.map(kind =>
+          TLVRecord(
+            TLVType.Kind,
+            ByteVector.fromInt(
+              kind,
+              size = 4,
+              ordering = ByteOrdering.BigEndian
             )
           )
         )
-        
     )
   )
   def encodeNaddr(addr: AddressPointer): (String, ByteVector) =
