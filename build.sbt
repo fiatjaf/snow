@@ -1,25 +1,33 @@
-ThisBuild / scalaVersion        := "3.3.4"
-ThisBuild / organization        := "io.github.vzxplnhqr"
-ThisBuild / homepage            := Some(url("https://github.com/fiatjaf/snow"))
-ThisBuild / licenses            += License.Apache2
-ThisBuild / developers          := List(
-  tlGitHubDev("fiatjaf", "fiatjaf"), tlGitHubDev("vzxplnhqr", "vzxplnhqr")
+ThisBuild / scalaVersion := "3.3.4"
+ThisBuild / organization := "io.github.vzxplnhqr"
+ThisBuild / organizationName := "VzxPLnHqr"
+ThisBuild / organizationHomepage := Some(url("https://fiatjaf.com"))
+ThisBuild / homepage := Some(url("https://github.com/fiatjaf/snow"))
+ThisBuild / startYear := Some(2023)
+//ThisBuild / licenses            += License.Apache2
+ThisBuild / developers := List(
+  tlGitHubDev("fiatjaf", "fiatjaf"),
+  tlGitHubDev("vzxplnhqr", "vzxplnhqr")
 )
 
-ThisBuild / version := "0.0.3-SNAPSHOT"
+//ThisBuild / version := "0.0.3-SNAPSHOT"
+ThisBuild / tlBaseVersion := "0.0"
 ThisBuild / sonatypeCredentialHost := "central.sonatype.com"
 
 ThisBuild / tlCiReleaseBranches := Seq("master")
+ThisBuild / tlCiHeaderCheck := false
+ThisBuild / tlCiScalafixCheck := false
+ThisBuild / tlCiScalafmtCheck := false
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 ThisBuild / scalacOptions ++= Seq("-source:future")
-//ThisBuild / tlFatalWarnings := false
+ThisBuild / tlFatalWarnings := false
 
 //sonatypeProfileName    := "io.github.vzxplnhqr"
 //scmInfo                := Some(ScmInfo(url("https://github.com/fiatjaf/snow"), "git@github.com:fiatjaf/snow.git"))
 //licenses               += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
-//publishMavenStyle      := true
-//publishTo              := sonatypePublishToBundle.value
+publishMavenStyle      := true
+publishTo              := sonatypePublishToBundle.value
 //sonatypeCredentialHost := "s01.oss.sonatype.org"
 
 lazy val snow = project
@@ -34,12 +42,12 @@ lazy val snow = project
       "com.fiatjaf" %%% "scoin" % "0.7.0",
       "org.http4s" %%% "http4s-dom" % "0.2.11",
       "org.http4s" %%% "http4s-client" % "0.23.25",
-
       "com.lihaoyi" %%% "utest" % "0.8.0" % Test
     ),
     testFrameworks += new TestFramework("utest.runner.Framework"),
-    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
-  ).enablePlugins(ScalaJSPlugin, EsbuildPlugin)
+    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) }
+  )
+  .enablePlugins(ScalaJSPlugin, EsbuildPlugin)
 
 // we need these things only to run tests on nodejs in github actions
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("21"))
@@ -48,20 +56,22 @@ ThisBuild / githubWorkflowBuildPreamble +=
     UseRef.Public("actions", "setup-node", "v4"),
     name = Some("Setup Node.js"),
     // must be a nodejs version with native WebSocket api
-    params = Map("node-version" -> "22"),
+    params = Map("node-version" -> "22")
   )
 ThisBuild / githubWorkflowBuildPreamble ++= Seq(
-    WorkflowStep.Run(
+  WorkflowStep.Run(
     name = Some("Install Node Modules"),
     commands = List(
       "sbt esInstall",
       "cp -a target/esbuild/. ./"
-    ),
+    )
   )
 )
 
 // maven magic, see https://github.com/makingthematrix/scala-suffix/tree/56270a#but-wait-thats-not-all
-Compile / packageBin / packageOptions += Package.ManifestAttributes("Automatic-Module-Name" -> "snow")
+Compile / packageBin / packageOptions += Package.ManifestAttributes(
+  "Automatic-Module-Name" -> "snow"
+)
 
 //// below are some notes/commands which might help to just make github actions
 //// entirely nix-aware:
