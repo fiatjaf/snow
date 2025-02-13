@@ -1,22 +1,26 @@
-import com.google.common.escape.CharEscaperBuilder
-
 ThisBuild / scalaVersion        := "3.3.4"
-ThisBuild / organization        := "com.fiatjaf"
+ThisBuild / organization        := "io.github.vzxplnhqr"
 ThisBuild / homepage            := Some(url("https://github.com/fiatjaf/snow"))
 ThisBuild / licenses            += License.Apache2
-ThisBuild / developers          := List(tlGitHubDev("fiatjaf", "fiatjaf"))
+ThisBuild / developers          := List(
+  tlGitHubDev("fiatjaf", "fiatjaf"), tlGitHubDev("vzxplnhqr", "vzxplnhqr")
+)
 
-ThisBuild / version := "0.0.2"
-ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeLegacy
+ThisBuild / version := "0.0.3-SNAPSHOT"
+ThisBuild / sonatypeCredentialHost := "central.sonatype.com"
+
+ThisBuild / tlCiReleaseBranches := Seq("master")
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
+ThisBuild / scalacOptions ++= Seq("-source:future")
+//ThisBuild / tlFatalWarnings := false
 
-sonatypeProfileName    := "com.fiatjaf"
-scmInfo                := Some(ScmInfo(url("https://github.com/fiatjaf/snow"), "git@github.com:fiatjaf/snow.git"))
-licenses               += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
-publishMavenStyle      := true
-publishTo              := sonatypePublishToBundle.value
-sonatypeCredentialHost := "s01.oss.sonatype.org"
+//sonatypeProfileName    := "io.github.vzxplnhqr"
+//scmInfo                := Some(ScmInfo(url("https://github.com/fiatjaf/snow"), "git@github.com:fiatjaf/snow.git"))
+//licenses               += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
+//publishMavenStyle      := true
+//publishTo              := sonatypePublishToBundle.value
+//sonatypeCredentialHost := "s01.oss.sonatype.org"
 
 lazy val snow = project
   .in(file("."))
@@ -34,10 +38,11 @@ lazy val snow = project
       "com.lihaoyi" %%% "utest" % "0.8.0" % Test
     ),
     testFrameworks += new TestFramework("utest.runner.Framework"),
-    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) }
+    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   ).enablePlugins(ScalaJSPlugin, EsbuildPlugin)
 
 // we need these things only to run tests on nodejs in github actions
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("21"))
 ThisBuild / githubWorkflowBuildPreamble +=
   WorkflowStep.Use(
     UseRef.Public("actions", "setup-node", "v4"),
