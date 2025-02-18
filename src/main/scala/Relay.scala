@@ -1,19 +1,17 @@
 package snow
 
-import scala.concurrent.duration.*
-import scoin.{Crypto, ByteVector32}
-import scodec.bits.ByteVector
-import fs2.{io as *, *}
-import fs2.concurrent.{Topic, Channel}
-import cats.implicits.*
+import cats.Show
 import cats.effect.*
-import org.http4s.Uri
-import org.http4s.client.websocket.*
-import org.http4s.dom.*
+import cats.implicits.*
+import fs2.concurrent.Channel
+import fs2.concurrent.Topic
+import fs2.{io as _, *}
 import io.circe.*
 import io.circe.parser.decode
 import io.circe.syntax.*
-import cats.Show
+import org.http4s.Uri
+import org.http4s.client.websocket.*
+import org.http4s.dom.*
 
 /** An implementation of Relay[F] provides methods like `subscribe` and access
   * to the underlying streams of things while hiding the details about how it

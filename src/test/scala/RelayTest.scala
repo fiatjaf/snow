@@ -1,13 +1,10 @@
 package snow
 
-import utest.*
-import scala.concurrent.duration.*
-import scala.scalajs
-import cats.implicits.*
 import cats.effect.*
 import cats.effect.unsafe.implicits.global
+import cats.implicits.*
 import org.http4s.syntax.literals.uri
-import fs2.concurrent.Channel
+import utest.*
 
 object RelayTest extends TestSuite {
 

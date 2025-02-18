@@ -1,7 +1,6 @@
 package snow
 
 import java.util.Date
-import scala.util.Try
 import scoin.{Crypto, PrivateKey, XOnlyPublicKey, ByteVector32, ByteVector64}
 import scodec.bits.ByteVector
 import cats.syntax.all.*

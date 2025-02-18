@@ -1,10 +1,9 @@
 package snow
 
+import scoin.ByteVector32
+import scoin.PrivateKey
+import scoin.XOnlyPublicKey
 import utest.*
-import io.circe.syntax.*
-import io.circe.parser.{parse, decode}
-import scodec.bits.ByteVector
-import scoin.{PrivateKey, XOnlyPublicKey, ByteVector32}
 
 object NIP19Test extends TestSuite {
   val tests = Tests {
@@ -16,7 +15,7 @@ object NIP19Test extends TestSuite {
         .toTry
         .get
 
-      assertMatch(value) { case _: ProfilePointer => }
+      assert(value.isInstanceOf[ProfilePointer])
 
       value match {
         case pp: ProfilePointer =>
@@ -40,7 +39,7 @@ object NIP19Test extends TestSuite {
         .toTry
         .get
 
-      assertMatch(value) { case _: PrivateKey => }
+      assert(value.isInstanceOf[PrivateKey])
 
       value match {
         case sk: PrivateKey =>
@@ -61,7 +60,7 @@ object NIP19Test extends TestSuite {
         .toTry
         .get
 
-      assertMatch(value) { case _: EventPointer => }
+      assert(value.isInstanceOf[EventPointer])
 
       value match {
         case evp: EventPointer =>
@@ -78,7 +77,7 @@ object NIP19Test extends TestSuite {
         .toTry
         .get
 
-      assertMatch(value) { case _: EventPointer => }
+      assert(value.isInstanceOf[EventPointer])
 
       value match {
         case evp: EventPointer =>
@@ -117,7 +116,7 @@ object NIP19Test extends TestSuite {
       )
       val encoded = NIP19.encode(evp)
       val value = NIP19.decode(encoded).toTry.get
-      assertMatch(value) { case _: EventPointer => }
+      assert(value.isInstanceOf[EventPointer])
       assert(value == evp)
     }
 
@@ -129,7 +128,7 @@ object NIP19Test extends TestSuite {
         .toTry
         .get
 
-      assertMatch(value) { case _: ProfilePointer => }
+      assert(value.isInstanceOf[ProfilePointer])
 
       value match {
         case pp: ProfilePointer =>
@@ -153,7 +152,7 @@ object NIP19Test extends TestSuite {
         .toTry
         .get
 
-      assertMatch(value) { case _: AddressPointer => }
+      assert(value.isInstanceOf[AddressPointer])
 
       value match {
         case addr: AddressPointer =>
