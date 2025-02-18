@@ -1,34 +1,41 @@
 ThisBuild / scalaVersion := "3.3.4"
-ThisBuild / organization := "io.github.vzxplnhqr"
-ThisBuild / organizationName := "VzxPLnHqr"
-ThisBuild / organizationHomepage := Some(url("https://fiatjaf.com"))
-ThisBuild / homepage := Some(url("https://github.com/fiatjaf/snow"))
-ThisBuild / startYear := Some(2023)
-//ThisBuild / licenses            += License.Apache2
 ThisBuild / developers := List(
   tlGitHubDev("fiatjaf", "fiatjaf"),
   tlGitHubDev("vzxplnhqr", "vzxplnhqr")
 )
+ThisBuild / organizationName := "fiatjaf" 
+ThisBuild / organizationHomepage := Some(url("https://fiatjaf.com"))
+ThisBuild / homepage := Some(url("https://github.com/fiatjaf/snow"))
+ThisBuild / startYear := Some(2023)
 
-//ThisBuild / version := "0.0.3-SNAPSHOT"
+/**
+  * the following settings need to be changed (commented/uncommmented) depending
+  * on which developer is publishing the releases via sonatype via github ci
+  */
+//ThisBuild / organization := "com.fiatjaf"                     // fiatjaf
+//ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"  // fiatjaf
+ThisBuild / organization           := "io.github.vzxplnhqr"   // VzxPLnHqr
+ThisBuild / sonatypeCredentialHost := "central.sonatype.com"  // VzxPLnHqr
+
+// see: https://typelevel.org/sbt-typelevel/faq.html#what-is-a-base-version-anyway
 ThisBuild / tlBaseVersion := "0.0"
-ThisBuild / sonatypeCredentialHost := "central.sonatype.com"
 
-ThisBuild / tlCiReleaseBranches := Seq("master")
+// for publishing snapshots
+// ThisBuild / tlCiReleaseBranches := Seq("master")
+
+// we disable these things for now so that github ci does not barf
 ThisBuild / tlCiHeaderCheck := false
 ThisBuild / tlCiScalafixCheck := false
 ThisBuild / tlCiScalafmtCheck := false
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 ThisBuild / scalacOptions ++= Seq("-source:future")
+
+// using sbt-typelevel plugin compiler fatal warnings are on by default
 ThisBuild / tlFatalWarnings := false
 
-//sonatypeProfileName    := "io.github.vzxplnhqr"
-//scmInfo                := Some(ScmInfo(url("https://github.com/fiatjaf/snow"), "git@github.com:fiatjaf/snow.git"))
-//licenses               += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
-publishMavenStyle      := true
-publishTo              := sonatypePublishToBundle.value
-//sonatypeCredentialHost := "s01.oss.sonatype.org"
+ThisBuild / publishMavenStyle      := true
+ThisBuild / publishTo              := sonatypePublishToBundle.value
 
 lazy val snow = project
   .in(file("."))
