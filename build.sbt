@@ -12,10 +12,10 @@ ThisBuild / startYear := Some(2023)
   * the following settings need to be changed (commented/uncommmented) depending
   * on which developer is publishing the releases via sonatype via github ci
   */
-//ThisBuild / organization := "com.fiatjaf"                     // fiatjaf
-//ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"  // fiatjaf
-ThisBuild / organization           := "io.github.vzxplnhqr"   // VzxPLnHqr
-ThisBuild / sonatypeCredentialHost := "central.sonatype.com"  // VzxPLnHqr
+ThisBuild / organization := "com.fiatjaf"                     // fiatjaf
+ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"  // fiatjaf
+//ThisBuild / organization           := "io.github.vzxplnhqr"   // VzxPLnHqr
+//ThisBuild / sonatypeCredentialHost := "central.sonatype.com"  // VzxPLnHqr
 
 // see: https://typelevel.org/sbt-typelevel/faq.html#what-is-a-base-version-anyway
 ThisBuild / tlBaseVersion := "0.0"
